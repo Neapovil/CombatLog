@@ -1,0 +1,40 @@
+plugins {
+  id 'java-library'
+  id 'eclipse'
+}
+
+repositories {
+  maven { url 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/' }
+  mavenCentral()
+}
+
+dependencies {
+  compileOnly group: 'org.spigotmc', name: 'spigot-api', version: '1.17.1-R0.1-SNAPSHOT'
+}
+
+java.toolchain.languageVersion = JavaLanguageVersion.of(16)
+
+def getCount = {
+  def out = new ByteArrayOutputStream()
+  exec {
+    commandLine 'git', 'rev-list', 'HEAD', '--count'
+    standardOutput = out
+  }
+  return out.toString().trim()
+}
+
+version = '1.17.1-' + getCount()
+group = 'com.github.nearata.combatlog'
+compileJava.options.encoding = 'UTF-8'
+
+task updatePluginVersion(type: Copy) {
+  from 'src/main/resources/plugin.yml'
+  into "$buildDir/resources/main"
+  filter { line -> line.replace('0v0', version) }
+}
+
+processResources {
+  exclude('plugin.yml')
+}
+
+build.dependsOn updatePluginVersion
