@@ -1,4 +1,5 @@
 name: CombatLog
 main: com.github.nearata.combatlog.CombatLog
-version: 0v0
+version: 1.0.0
 api-version: 1.13
+author: Nearata

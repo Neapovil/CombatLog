@@ -2,27 +2,27 @@ package com.github.nearata.combatlog;
 
 import org.bukkit.plugin.java.JavaPlugin;
 
-import com.github.nearata.combatlog.listener.CombatLogListener;
-import com.github.nearata.combatlog.manager.CombatLogManager;
-import com.github.nearata.combatlog.runnable.CombatLogRunnable;
+import com.github.nearata.combatlog.listener.Listener;
+import com.github.nearata.combatlog.manager.Manager;
+import com.github.nearata.combatlog.runnable.Runnable;
 
 public final class CombatLog extends JavaPlugin
 {
     private static CombatLog instance;
-    private CombatLogManager combatLogManager;
+    private Manager manager;
 
     @Override
     public void onEnable()
     {
         instance = this;
 
-        this.combatLogManager = new CombatLogManager(this);
+        this.manager = new Manager();
 
-        this.getServer().getPluginManager().registerEvents(new CombatLogListener(this), this);
+        this.getServer().getPluginManager().registerEvents(new Listener(), this);
 
         this.saveDefaultConfig();
 
-        new CombatLogRunnable(this).runTaskTimer(this, 0, 20);
+        new Runnable().runTaskTimer(this, 0, 20);
     }
 
     @Override
@@ -35,8 +35,8 @@ public final class CombatLog extends JavaPlugin
         return instance;
     }
 
-    public CombatLogManager getCombatLogManager()
+    public Manager getManager()
     {
-        return this.combatLogManager;
+        return this.manager;
     }
 }

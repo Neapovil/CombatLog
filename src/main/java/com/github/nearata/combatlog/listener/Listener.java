@@ -1,26 +1,18 @@
 package com.github.nearata.combatlog.listener;
 
-import java.util.UUID;
-
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.projectiles.ProjectileSource;
 
 import com.github.nearata.combatlog.CombatLog;
 
-public final class CombatLogListener implements Listener
+public final class Listener implements org.bukkit.event.Listener
 {
-    private final CombatLog plugin;
-
-    public CombatLogListener(CombatLog plugin)
-    {
-        this.plugin = plugin;
-    }
+    private final CombatLog plugin = CombatLog.getInstance();
 
     @EventHandler
     public void entityDamageByEntity(EntityDamageByEntityEvent event)
@@ -33,19 +25,17 @@ public final class CombatLogListener implements Listener
             return;
         }
 
-        plugin.getCombatLogManager().add(victim);
-        plugin.getCombatLogManager().add(killer);
+        plugin.getManager().add(victim);
+        plugin.getManager().add(killer);
     }
 
     @EventHandler
     public void playerQuit(PlayerQuitEvent event)
     {
-        final UUID uuid = event.getPlayer().getUniqueId();
-
-        if (plugin.getCombatLogManager().hasCooldown(uuid))
+        if (plugin.getManager().getPlayers().containsKey(event.getPlayer().getUniqueId()))
         {
             event.getPlayer().setHealth(0);
-            plugin.getCombatLogManager().remove(uuid);
+            plugin.getManager().remove(event.getPlayer());
         }
     }
 
