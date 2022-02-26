@@ -1,4 +1,4 @@
-package com.github.nearata.combatlog.listener;
+package com.github.neapovil.combatlog.listener;
 
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -8,7 +8,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.projectiles.ProjectileSource;
 
-import com.github.nearata.combatlog.CombatLog;
+import com.github.neapovil.combatlog.CombatLog;
 
 public final class Listener implements org.bukkit.event.Listener
 {

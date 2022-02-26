@@ -1,10 +1,10 @@
-package com.github.nearata.combatlog.runnable;
+package com.github.neapovil.combatlog.runnable;
 
 import java.time.Instant;
 
 import org.bukkit.scheduler.BukkitRunnable;
 
-import com.github.nearata.combatlog.CombatLog;
+import com.github.neapovil.combatlog.CombatLog;
 
 import net.md_5.bungee.api.ChatColor;
 

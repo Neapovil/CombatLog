@@ -1,4 +1,4 @@
-package com.github.nearata.combatlog.manager;
+package com.github.neapovil.combatlog.manager;
 
 import java.time.Instant;
 import java.util.HashMap;
@@ -7,7 +7,7 @@ import java.util.UUID;
 
 import org.bukkit.entity.Player;
 
-import com.github.nearata.combatlog.CombatLog;
+import com.github.neapovil.combatlog.CombatLog;
 
 import net.md_5.bungee.api.ChatColor;
 
