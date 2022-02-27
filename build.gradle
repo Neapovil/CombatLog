@@ -4,7 +4,7 @@ plugins {
 }
 
 version = "1.18.1"
-group = 'com.github.nearata.combatlog'
+group = 'com.github.neapovil.combatlog'
 compileJava.options.encoding = 'UTF-8'
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
