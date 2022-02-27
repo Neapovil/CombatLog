@@ -40,4 +40,9 @@ public final class Manager
             player.sendMessage(ChatColor.GREEN + "You are no longer in combat!");
         }
     }
+
+    public void clear()
+    {
+        this.players.clear();
+    }
 }

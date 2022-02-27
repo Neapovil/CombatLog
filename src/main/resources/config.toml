@@ -1,3 +1,4 @@
 [general]
 
 cooldown = 60
+enabled = false

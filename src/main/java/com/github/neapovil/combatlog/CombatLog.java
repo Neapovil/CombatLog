@@ -10,6 +10,7 @@ import com.github.neapovil.combatlog.manager.Manager;
 import com.github.neapovil.combatlog.runnable.Runnable;
 
 import dev.jorel.commandapi.CommandAPICommand;
+import dev.jorel.commandapi.arguments.BooleanArgument;
 import dev.jorel.commandapi.arguments.IntegerArgument;
 import dev.jorel.commandapi.arguments.LiteralArgument;
 
@@ -50,6 +51,21 @@ public final class CombatLog extends JavaPlugin
                     sender.sendMessage("Cooldown changed to: " + cd + "s");
                 })
                 .register();
+
+        new CommandAPICommand("combatlog")
+                .withPermission("combatlog.command")
+                .withArguments(new LiteralArgument("enabled"))
+                .withArguments(new BooleanArgument("bool"))
+                .executes((sender, args) -> {
+                    final boolean bool = (boolean) args[0];
+
+                    this.manager.clear();
+
+                    this.config.set("general.enabled", bool);
+
+                    sender.sendMessage("Combatlog enabled: " + bool);
+                })
+                .register();
     }
 
     @Override
@@ -65,5 +81,10 @@ public final class CombatLog extends JavaPlugin
     public Manager getManager()
     {
         return this.manager;
+    }
+
+    public boolean isCombatlogEnabled()
+    {
+        return this.config.get("general.enabled");
     }
 }

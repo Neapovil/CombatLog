@@ -17,6 +17,11 @@ public final class Listener implements org.bukkit.event.Listener
     @EventHandler
     public void entityDamageByEntity(EntityDamageByEntityEvent event)
     {
+        if (!plugin.isCombatlogEnabled())
+        {
+            return;
+        }
+
         final Player victim = this.getPlayerFromEntity(event.getEntity());
         final Player killer = this.getPlayerFromEntity(event.getDamager());
 
@@ -32,6 +37,11 @@ public final class Listener implements org.bukkit.event.Listener
     @EventHandler
     public void playerQuit(PlayerQuitEvent event)
     {
+        if (!plugin.isCombatlogEnabled())
+        {
+            return;
+        }
+
         if (plugin.getManager().getPlayers().containsKey(event.getPlayer().getUniqueId()))
         {
             event.getPlayer().setHealth(0);
