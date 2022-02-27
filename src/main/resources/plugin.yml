@@ -4,6 +4,8 @@ version: 1.0.0
 api-version: 1.13
 author: Neapovil
 website: https://github.com/neapovil/combatlog
+depend:
+  - CommandAPI
 permissions:
   combatlog.command:
     default: op
