@@ -5,14 +5,11 @@ import java.io.File;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.electronwill.nightconfig.core.file.FileConfig;
+import com.github.neapovil.combatlog.command.EnabledCommand;
+import com.github.neapovil.combatlog.command.SetCooldownCommand;
 import com.github.neapovil.combatlog.listener.Listener;
 import com.github.neapovil.combatlog.manager.Manager;
 import com.github.neapovil.combatlog.runnable.Runnable;
-
-import dev.jorel.commandapi.CommandAPICommand;
-import dev.jorel.commandapi.arguments.BooleanArgument;
-import dev.jorel.commandapi.arguments.IntegerArgument;
-import dev.jorel.commandapi.arguments.LiteralArgument;
 
 public final class CombatLog extends JavaPlugin
 {
@@ -25,9 +22,9 @@ public final class CombatLog extends JavaPlugin
     {
         instance = this;
 
-        this.saveResource("config.toml", false);
+        this.saveResource("config.json", false);
 
-        this.config = FileConfig.builder(new File(this.getDataFolder(), "config.toml"))
+        this.config = FileConfig.builder(new File(this.getDataFolder(), "config.json"))
                 .autoreload()
                 .autosave()
                 .build();
@@ -39,33 +36,8 @@ public final class CombatLog extends JavaPlugin
 
         new Runnable().runTaskTimer(this, 0, 20);
 
-        new CommandAPICommand("combatlog")
-                .withPermission("combatlog.command")
-                .withArguments(new LiteralArgument("setcooldown"))
-                .withArguments(new IntegerArgument("seconds"))
-                .executes((sender, args) -> {
-                    final int cd = (int) args[0];
-
-                    this.config.set("general.cooldown", cd);
-
-                    sender.sendMessage("Cooldown changed to: " + cd + "s");
-                })
-                .register();
-
-        new CommandAPICommand("combatlog")
-                .withPermission("combatlog.command")
-                .withArguments(new LiteralArgument("enabled"))
-                .withArguments(new BooleanArgument("bool"))
-                .executes((sender, args) -> {
-                    final boolean bool = (boolean) args[0];
-
-                    this.manager.clear();
-
-                    this.config.set("general.enabled", bool);
-
-                    sender.sendMessage("Combatlog enabled: " + bool);
-                })
-                .register();
+        EnabledCommand.register();
+        SetCooldownCommand.register();
     }
 
     @Override
@@ -85,6 +57,21 @@ public final class CombatLog extends JavaPlugin
 
     public boolean isCombatlogEnabled()
     {
-        return this.config.get("general.enabled");
+        return this.config.get("config.enabled");
+    }
+
+    public int getCooldownPeriod()
+    {
+        return this.config.get("config.cooldown");
+    }
+
+    public void setCooldownPeriod(int seconds)
+    {
+        this.config.set("config.cooldown", seconds);
+    }
+
+    public void setCooldownStatus(boolean bool)
+    {
+        this.config.set("config.enabled", bool);
     }
 }

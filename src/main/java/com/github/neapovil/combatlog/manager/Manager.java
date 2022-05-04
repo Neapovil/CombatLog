@@ -14,16 +14,11 @@ import net.md_5.bungee.api.ChatColor;
 public final class Manager
 {
     private final CombatLog plugin = CombatLog.getInstance();
-    private Map<UUID, Instant> players = new HashMap<>();
-
-    public Map<UUID, Instant> getPlayers()
-    {
-        return this.players;
-    }
+    private final Map<UUID, Instant> players = new HashMap<>();
 
     public void add(Player player)
     {
-        final Instant prev = players.put(player.getUniqueId(), Instant.now().plusSeconds(plugin.getConfig().getInt("cooldown")));
+        final Instant prev = players.put(player.getUniqueId(), Instant.now().plusSeconds(plugin.getCooldownPeriod()));
 
         if (prev == null)
         {
@@ -44,5 +39,22 @@ public final class Manager
     public void clear()
     {
         this.players.clear();
+    }
+
+    public boolean isInCombatlog(Player player)
+    {
+        return this.players.containsKey(player.getUniqueId());
+    }
+
+    public void removeIfExpired()
+    {
+        this.players.forEach((uuid, time) -> {
+            if (Instant.now().isAfter(time))
+            {
+                plugin.getServer().getPlayer(uuid).sendMessage(ChatColor.GREEN + "You are no longer in combat!");
+            }
+        });
+
+        this.players.values().removeIf(v -> Instant.now().isAfter(v));
     }
 }

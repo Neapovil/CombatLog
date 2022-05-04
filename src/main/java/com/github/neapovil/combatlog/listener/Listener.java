@@ -42,7 +42,7 @@ public final class Listener implements org.bukkit.event.Listener
             return;
         }
 
-        if (plugin.getManager().getPlayers().containsKey(event.getPlayer().getUniqueId()))
+        if (plugin.getManager().isInCombatlog(event.getPlayer()))
         {
             event.getPlayer().setHealth(0);
             plugin.getManager().remove(event.getPlayer());
