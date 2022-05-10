@@ -11,24 +11,24 @@ import com.github.neapovil.combatlog.listener.Listener;
 import com.github.neapovil.combatlog.manager.Manager;
 import com.github.neapovil.combatlog.runnable.Runnable;
 
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
+
 public final class CombatLog extends JavaPlugin
 {
     private static CombatLog instance;
     private Manager manager;
     private FileConfig config;
+    private FileConfig messages;
+    private final MiniMessage miniMessage = MiniMessage.miniMessage();
 
     @Override
     public void onEnable()
     {
         instance = this;
 
-        this.saveResource("config.json", false);
-
-        this.config = FileConfig.builder(new File(this.getDataFolder(), "config.json"))
-                .autoreload()
-                .autosave()
-                .build();
-        this.config.load();
+        this.config = this.initConfig("config.json");
+        this.messages = this.initConfig("messages.json");
 
         this.manager = new Manager();
 
@@ -73,5 +73,25 @@ public final class CombatLog extends JavaPlugin
     public void setCooldownStatus(boolean bool)
     {
         this.config.set("config.enabled", bool);
+    }
+
+    public Component getMessageComponent(String path)
+    {
+        final String message = this.messages.get("messages." + path);
+        return this.miniMessage.deserialize(message);
+    }
+
+    private FileConfig initConfig(String fileName)
+    {
+        this.saveResource(fileName, false);
+
+        final FileConfig config = FileConfig.builder(new File(this.getDataFolder(), fileName))
+                .autoreload()
+                .autosave()
+                .build();
+
+        config.load();
+
+        return config;
     }
 }

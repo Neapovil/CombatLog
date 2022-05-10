@@ -1,0 +1,6 @@
+{
+  "messages": {
+    "yes_combatlog": "<red>You are now in combat!",
+    "no_combatlog": "<green>You are no longer in combat!"
+  }
+}

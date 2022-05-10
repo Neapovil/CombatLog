@@ -9,8 +9,6 @@ import org.bukkit.entity.Player;
 
 import com.github.neapovil.combatlog.CombatLog;
 
-import net.md_5.bungee.api.ChatColor;
-
 public final class Manager
 {
     private final CombatLog plugin = CombatLog.getInstance();
@@ -22,7 +20,7 @@ public final class Manager
 
         if (prev == null)
         {
-            player.sendMessage(ChatColor.RED + "You are now in combat!");
+            player.sendMessage(plugin.getMessageComponent("yes_combatlog"));
         }
     }
 
@@ -32,7 +30,7 @@ public final class Manager
 
         if (prev != null)
         {
-            player.sendMessage(ChatColor.GREEN + "You are no longer in combat!");
+            player.sendMessage(plugin.getMessageComponent("no_combatlog"));
         }
     }
 
@@ -51,7 +49,7 @@ public final class Manager
         this.players.forEach((uuid, time) -> {
             if (Instant.now().isAfter(time))
             {
-                plugin.getServer().getPlayer(uuid).sendMessage(ChatColor.GREEN + "You are no longer in combat!");
+                plugin.getServer().getPlayer(uuid).sendMessage(plugin.getMessageComponent("no_combatlog"));
             }
         });
 
