@@ -1,58 +1,55 @@
 package com.github.neapovil.combatlog.manager;
 
 import java.time.Instant;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
 
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
+import org.bukkit.persistence.PersistentDataType;
 
 import com.github.neapovil.combatlog.CombatLog;
 
 public final class Manager
 {
     private final CombatLog plugin = CombatLog.getInstance();
-    private final Map<UUID, Instant> players = new HashMap<>();
+    private final NamespacedKey namespacedKey = new NamespacedKey(plugin, "time");
 
-    public void add(Player player)
+    public void add(Player player, boolean send)
     {
-        final Instant prev = players.put(player.getUniqueId(), Instant.now().plusSeconds(plugin.getCooldownPeriod()));
-
-        if (prev == null)
+        if (send && !player.getPersistentDataContainer().has(this.namespacedKey))
         {
-            player.sendMessage(plugin.getMessageComponent("yes_combatlog"));
+            final String message = plugin.getConfigMessage("yes_combatlog");
+            player.sendMessage(plugin.getMiniMessage().deserialize(message));
         }
+
+        final long time = Instant.now().plusSeconds(plugin.getCooldownPeriod()).toEpochMilli();
+
+        player.getPersistentDataContainer().set(this.namespacedKey, PersistentDataType.LONG, time);
     }
 
-    public void remove(Player player)
+    public void remove(Player player, boolean send)
     {
-        final Instant prev = players.remove(player.getUniqueId());
-
-        if (prev != null)
+        if (send && player.getPersistentDataContainer().has(this.namespacedKey))
         {
-            player.sendMessage(plugin.getMessageComponent("no_combatlog"));
+            final String message = plugin.getConfigMessage("no_combatlog");
+            player.sendMessage(plugin.getMiniMessage().deserialize(message));
         }
+
+        player.getPersistentDataContainer().remove(this.namespacedKey);
     }
 
     public void clear()
     {
-        this.players.clear();
+        plugin.getServer().getOnlinePlayers().forEach(i -> this.remove(i, false));
     }
 
-    public boolean isInCombatlog(Player player)
+    public boolean hasCombatlog(Player player)
     {
-        return this.players.containsKey(player.getUniqueId());
+        return player.getPersistentDataContainer().has(this.namespacedKey);
     }
 
-    public void removeIfExpired()
+    public boolean isCombatlogExpired(Player player)
     {
-        this.players.forEach((uuid, time) -> {
-            if (Instant.now().isAfter(time))
-            {
-                plugin.getServer().getPlayer(uuid).sendMessage(plugin.getMessageComponent("no_combatlog"));
-            }
-        });
-
-        this.players.values().removeIf(v -> Instant.now().isAfter(v));
+        final long time = player.getPersistentDataContainer().get(this.namespacedKey, PersistentDataType.LONG);
+        return Instant.now().isAfter(Instant.ofEpochMilli(time));
     }
 }

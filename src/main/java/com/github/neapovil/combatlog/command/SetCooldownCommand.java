@@ -5,6 +5,7 @@ import com.github.neapovil.combatlog.CombatLog;
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.IntegerArgument;
 import dev.jorel.commandapi.arguments.LiteralArgument;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 
 public final class SetCooldownCommand
 {
@@ -21,7 +22,9 @@ public final class SetCooldownCommand
 
                     plugin.setCooldownPeriod(seconds);
 
-                    sender.sendMessage("Cooldown changed to: " + seconds + "s");
+                    final String message = plugin.getConfigMessage("cooldown_changed");
+
+                    sender.sendMessage(plugin.getMiniMessage().deserialize(message, Placeholder.parsed("new_period", "" + seconds)));
                 })
                 .register();
     }

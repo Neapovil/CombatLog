@@ -5,6 +5,7 @@ import com.github.neapovil.combatlog.CombatLog;
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.BooleanArgument;
 import dev.jorel.commandapi.arguments.LiteralArgument;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 
 public final class EnabledCommand
 {
@@ -23,7 +24,9 @@ public final class EnabledCommand
 
                     plugin.setCooldownStatus(bool);
 
-                    sender.sendMessage("Combatlog enabled: " + bool);
+                    final String message = plugin.getConfigMessage("status_changed");
+
+                    sender.sendMessage(plugin.getMiniMessage().deserialize(message, Placeholder.parsed("new_status", "" + bool)));
                 })
                 .register();
     }

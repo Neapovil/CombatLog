@@ -1,6 +1,8 @@
 {
   "messages": {
     "yes_combatlog": "<red>You are now in combat!",
-    "no_combatlog": "<green>You are no longer in combat!"
+    "no_combatlog": "<green>You are no longer in combat!",
+    "status_changed": "Combatlog status changed to: <new_status>",
+    "cooldown_changed": "Combatlog cooldown period changed to: <new_period>s"
   }
 }

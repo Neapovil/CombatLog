@@ -11,6 +11,10 @@ public final class Runnable extends BukkitRunnable
     @Override
     public void run()
     {
-        plugin.getManager().removeIfExpired();
+        plugin.getServer().getOnlinePlayers()
+                .stream()
+                .filter(i -> plugin.getManager().hasCombatlog(i))
+                .filter(i -> plugin.getManager().isCombatlogExpired(i))
+                .forEach(i -> plugin.getManager().remove(i, true));
     }
 }

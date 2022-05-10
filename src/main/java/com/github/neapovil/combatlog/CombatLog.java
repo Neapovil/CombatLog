@@ -11,7 +11,6 @@ import com.github.neapovil.combatlog.listener.Listener;
 import com.github.neapovil.combatlog.manager.Manager;
 import com.github.neapovil.combatlog.runnable.Runnable;
 
-import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 
 public final class CombatLog extends JavaPlugin
@@ -43,6 +42,7 @@ public final class CombatLog extends JavaPlugin
     @Override
     public void onDisable()
     {
+        this.manager.clear();
     }
 
     public static CombatLog getInstance()
@@ -75,10 +75,14 @@ public final class CombatLog extends JavaPlugin
         this.config.set("config.enabled", bool);
     }
 
-    public Component getMessageComponent(String path)
+    public String getConfigMessage(String path)
     {
-        final String message = this.messages.get("messages." + path);
-        return this.miniMessage.deserialize(message);
+        return this.messages.get("messages." + path);
+    }
+
+    public MiniMessage getMiniMessage()
+    {
+        return this.miniMessage;
     }
 
     private FileConfig initConfig(String fileName)

@@ -30,8 +30,8 @@ public final class Listener implements org.bukkit.event.Listener
             return;
         }
 
-        plugin.getManager().add(victim);
-        plugin.getManager().add(killer);
+        plugin.getManager().add(victim, true);
+        plugin.getManager().add(killer, true);
     }
 
     @EventHandler
@@ -42,10 +42,10 @@ public final class Listener implements org.bukkit.event.Listener
             return;
         }
 
-        if (plugin.getManager().isInCombatlog(event.getPlayer()))
+        if (plugin.getManager().hasCombatlog(event.getPlayer()))
         {
             event.getPlayer().setHealth(0);
-            plugin.getManager().remove(event.getPlayer());
+            plugin.getManager().remove(event.getPlayer(), false);
         }
     }
 
