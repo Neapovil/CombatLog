@@ -9,6 +9,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.projectiles.ProjectileSource;
 import org.jetbrains.annotations.Nullable;
 
+import com.destroystokyo.paper.event.server.ServerTickStartEvent;
 import com.github.neapovil.combatlog.CombatLog;
 
 public final class Listener implements org.bukkit.event.Listener
@@ -18,7 +19,7 @@ public final class Listener implements org.bukkit.event.Listener
     @EventHandler
     public void entityDamageByEntity(EntityDamageByEntityEvent event)
     {
-        if (!plugin.isCombatlogEnabled())
+        if (!plugin.getConfigManager().isCombatlogEnabled())
         {
             return;
         }
@@ -31,22 +32,59 @@ public final class Listener implements org.bukkit.event.Listener
             return;
         }
 
-        plugin.getManager().add(victim, true);
-        plugin.getManager().add(killer, true);
+        if (!plugin.getCombatManager().has(victim))
+        {
+            final String message = plugin.getMessageManager().getMessage("yes_combatlog");
+
+            victim.sendMessage(plugin.getMessageManager().deserialize(message));
+        }
+
+        if (!plugin.getCombatManager().has(killer))
+        {
+            final String message = plugin.getMessageManager().getMessage("yes_combatlog");
+
+            killer.sendMessage(plugin.getMessageManager().deserialize(message));
+        }
+
+        plugin.getCombatManager().add(victim);
+        plugin.getCombatManager().add(killer);
     }
 
     @EventHandler
     public void playerQuit(PlayerQuitEvent event)
     {
-        if (!plugin.isCombatlogEnabled())
+        if (!plugin.getConfigManager().isCombatlogEnabled())
         {
             return;
         }
 
-        if (plugin.getManager().hasCombatlog(event.getPlayer()))
+        if (!plugin.getCombatManager().isExpired(event.getPlayer()))
         {
             event.getPlayer().setHealth(0);
-            plugin.getManager().remove(event.getPlayer(), false);
+            plugin.getCombatManager().remove(event.getPlayer());
+        }
+    }
+
+    @EventHandler
+    public void serverTick(ServerTickStartEvent event)
+    {
+        if (event.getTickNumber() % 20 != 0)
+        {
+            return;
+        }
+
+        for (Player player : plugin.getServer().getOnlinePlayers())
+        {
+            if (!plugin.getCombatManager().isExpired(player))
+            {
+                continue;
+            }
+
+            plugin.getCombatManager().remove(player);
+
+            final String message = plugin.getMessageManager().getMessage("no_combatlog");
+
+            player.sendMessage(plugin.getMessageManager().deserialize(message));
         }
     }
 

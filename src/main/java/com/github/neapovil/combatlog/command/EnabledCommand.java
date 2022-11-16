@@ -9,8 +9,6 @@ import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 
 public final class EnabledCommand
 {
-    private static final CombatLog plugin = CombatLog.getInstance();
-
     public static final void register()
     {
         new CommandAPICommand("combatlog")
@@ -20,13 +18,15 @@ public final class EnabledCommand
                 .executes((sender, args) -> {
                     final boolean bool = (boolean) args[0];
 
-                    plugin.getManager().clear();
+                    final CombatLog plugin = CombatLog.getInstance();
 
-                    plugin.setCooldownStatus(bool);
+                    plugin.getCombatManager().clearAll();
 
-                    final String message = plugin.getConfigMessage("status_changed");
+                    plugin.getConfigManager().setCooldownStatus(bool);
 
-                    sender.sendMessage(plugin.getMiniMessage().deserialize(message, Placeholder.parsed("new_status", "" + bool)));
+                    final String message = plugin.getMessageManager().getMessage("status_changed");
+
+                    sender.sendMessage(plugin.getMessageManager().deserialize(message, Placeholder.parsed("new_status", "" + bool)));
                 })
                 .register();
     }

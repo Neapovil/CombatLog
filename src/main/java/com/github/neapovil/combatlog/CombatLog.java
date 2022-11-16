@@ -6,32 +6,27 @@ import com.electronwill.nightconfig.core.file.FileConfig;
 import com.github.neapovil.combatlog.command.EnabledCommand;
 import com.github.neapovil.combatlog.command.SetCooldownCommand;
 import com.github.neapovil.combatlog.listener.Listener;
-import com.github.neapovil.combatlog.manager.Manager;
-import com.github.neapovil.combatlog.runnable.Runnable;
-
-import net.kyori.adventure.text.minimessage.MiniMessage;
+import com.github.neapovil.combatlog.manager.ConfigManager;
+import com.github.neapovil.combatlog.manager.MessageManager;
+import com.github.neapovil.combatlog.manager.CombatManager;
 
 public final class CombatLog extends JavaPlugin
 {
     private static CombatLog instance;
-    private Manager manager;
-    private FileConfig config;
-    private FileConfig messages;
-    private final MiniMessage miniMessage = MiniMessage.miniMessage();
+    private CombatManager combatManager;
+    private ConfigManager configManager;
+    private MessageManager messageManager;
 
     @Override
     public void onEnable()
     {
         instance = this;
 
-        this.config = this.initConfig("config.json");
-        this.messages = this.initConfig("messages.json");
-
-        this.manager = new Manager();
+        this.combatManager = new CombatManager(this);
+        this.configManager = new ConfigManager(this.initConfig("config.json"));
+        this.messageManager = new MessageManager(this.initConfig("messages.json"));
 
         this.getServer().getPluginManager().registerEvents(new Listener(), this);
-
-        new Runnable().runTaskTimer(this, 0, 20);
 
         EnabledCommand.register();
         SetCooldownCommand.register();
@@ -40,7 +35,7 @@ public final class CombatLog extends JavaPlugin
     @Override
     public void onDisable()
     {
-        this.manager.clear();
+        this.combatManager.clearAll();
     }
 
     public static CombatLog getInstance()
@@ -48,39 +43,19 @@ public final class CombatLog extends JavaPlugin
         return instance;
     }
 
-    public Manager getManager()
+    public CombatManager getCombatManager()
     {
-        return this.manager;
+        return this.combatManager;
     }
 
-    public boolean isCombatlogEnabled()
+    public ConfigManager getConfigManager()
     {
-        return this.config.get("config.enabled");
+        return this.configManager;
     }
 
-    public int getCooldownPeriod()
+    public MessageManager getMessageManager()
     {
-        return this.config.get("config.cooldown");
-    }
-
-    public void setCooldownPeriod(int seconds)
-    {
-        this.config.set("config.cooldown", seconds);
-    }
-
-    public void setCooldownStatus(boolean bool)
-    {
-        this.config.set("config.enabled", bool);
-    }
-
-    public String getConfigMessage(String path)
-    {
-        return this.messages.get("messages." + path);
-    }
-
-    public MiniMessage getMiniMessage()
-    {
-        return this.miniMessage;
+        return this.messageManager;
     }
 
     private FileConfig initConfig(String fileName)

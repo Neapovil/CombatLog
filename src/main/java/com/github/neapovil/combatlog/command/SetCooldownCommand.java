@@ -9,8 +9,6 @@ import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 
 public final class SetCooldownCommand
 {
-    private static final CombatLog plugin = CombatLog.getInstance();
-
     public static final void register()
     {
         new CommandAPICommand("combatlog")
@@ -20,11 +18,13 @@ public final class SetCooldownCommand
                 .executes((sender, args) -> {
                     final int seconds = (int) args[0];
 
-                    plugin.setCooldownPeriod(seconds);
+                    final CombatLog plugin = CombatLog.getInstance();
 
-                    final String message = plugin.getConfigMessage("cooldown_changed");
+                    plugin.getConfigManager().setCooldownPeriod(seconds);
 
-                    sender.sendMessage(plugin.getMiniMessage().deserialize(message, Placeholder.parsed("new_period", "" + seconds)));
+                    final String message = plugin.getMessageManager().getMessage("cooldown_changed");
+
+                    sender.sendMessage(plugin.getMessageManager().deserialize(message, Placeholder.parsed("new_period", "" + seconds)));
                 })
                 .register();
     }
