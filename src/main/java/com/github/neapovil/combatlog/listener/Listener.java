@@ -7,6 +7,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.projectiles.ProjectileSource;
+import org.jetbrains.annotations.Nullable;
 
 import com.github.neapovil.combatlog.CombatLog;
 
@@ -49,6 +50,7 @@ public final class Listener implements org.bukkit.event.Listener
         }
     }
 
+    @Nullable
     private final Player getPlayerFromEntity(Entity entity)
     {
         if (entity instanceof Player)

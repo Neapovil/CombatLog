@@ -1,7 +1,5 @@
 package com.github.neapovil.combatlog;
 
-import java.io.File;
-
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.electronwill.nightconfig.core.file.FileConfig;
@@ -89,7 +87,7 @@ public final class CombatLog extends JavaPlugin
     {
         this.saveResource(fileName, false);
 
-        final FileConfig config = FileConfig.builder(new File(this.getDataFolder(), fileName))
+        final FileConfig config = FileConfig.builder(this.getDataFolder().toPath().resolve(fileName))
                 .autoreload()
                 .autosave()
                 .build();
